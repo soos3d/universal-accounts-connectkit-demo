@@ -106,7 +106,7 @@ const SendFunds = ({
               <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                 <span>Network: Arbitrum One</span>
                 <a
-                  href="https://github.com/particle-network/particle-network-docs/tree/main/demo/universal-accounts"
+                  href="https://github.com/soos3d/universal-accounts-connectkit-demo/blob/main/ua-conneckit/app/components/SendFunds.tsx"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:underline flex items-center gap-1"

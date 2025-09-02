@@ -107,7 +107,7 @@ export default function ContractInteraction({
               <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                 <span>Contract: 0x...2510</span>
                 <a
-                  href="https://github.com/particle-network/particle-network-docs/tree/main/demo/universal-accounts"
+                  href="https://github.com/soos3d/universal-accounts-connectkit-demo/blob/main/ua-conneckit/app/components/ContractInteraction.tsx"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:underline flex items-center gap-1"
@@ -131,7 +131,7 @@ export default function ContractInteraction({
             </div>
           )}
         </div>
-        
+
         <div className="w-full mt-4">
           <p className="text-sm text-gray-300 mb-2">NFT Collection</p>
           <div className="w-full px-4 py-2 bg-[#1A1A2A] border border-[#4A4A6A] rounded-md text-gray-400 focus:outline-none">
