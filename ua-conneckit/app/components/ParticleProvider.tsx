@@ -3,7 +3,6 @@
 import { ConnectKitProvider, createConfig } from "@particle-network/connectkit";
 import { authWalletConnectors } from "@particle-network/connectkit/auth";
 import { mainnet } from "@particle-network/connectkit/chains";
-import { evmWalletConnectors } from "@particle-network/connectkit/evm";
 import React from "react";
 
 // Retrieved from https://dashboard.particle.network
@@ -20,12 +19,6 @@ const config = createConfig({
   clientKey,
   appId,
   appearance: {
-    // Optional, collection of properties to alter the appearance of the connection modal
-    // Optional, label and sort wallets (to be shown in the connection modal)
-    recommendedWallets: [
-      { walletId: "metaMask", label: "Recommended" },
-      { walletId: "coinbaseWallet", label: "popular" },
-    ],
     splitEmailAndPhone: false, // Optional, displays Email and phone number entry separately
     collapseWalletList: false, // Optional, hide wallet list behind a button
     hideContinueButton: false, // Optional, remove "Continue" button underneath Email or phone number entry
@@ -34,10 +27,6 @@ const config = createConfig({
     mode: "dark", // Optional, changes theme between light, dark, or auto (which will change it based on system settings)
   },
   walletConnectors: [
-    evmWalletConnectors({
-      metadata: { name: "My App", icon: "", description: "", url: "" }, // Optional, this is Metadata used by WalletConnect and Coinbase
-      walletConnectProjectId: "Replace with your WalletConnect Project ID", // optional, retrieved from https://cloud.walletconnect.com
-    }),
     authWalletConnectors({
       // Optional, configure this if you're using social logins
       authTypes: ["email", "google", "apple", "twitter", "github"], // Optional, restricts the types of social logins supported
