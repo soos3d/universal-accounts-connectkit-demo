@@ -3,7 +3,7 @@
 import { ConnectKitProvider, createConfig } from "@particle-network/connectkit";
 import { authWalletConnectors } from "@particle-network/connectkit/auth";
 import { mainnet } from "@particle-network/connectkit/chains";
-//import { evmWalletConnectors } from "@particle-network/connectkit/evm";
+import { evmWalletConnectors } from "@particle-network/connectkit/evm";
 import React from "react";
 
 // Retrieved from https://dashboard.particle.network
@@ -55,11 +55,11 @@ const config = createConfig({
         promptPaymentPasswordSettingWhenSign: 1,
       },
     }),
-    //evmWalletConnectors({
-    //  walletConnectProjectId: process.env
-    //    .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-    //  multiInjectedProviderDiscovery: true,
-    //}),
+    evmWalletConnectors({
+      walletConnectProjectId: process.env
+        .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+      multiInjectedProviderDiscovery: true,
+    }),
   ],
   chains: [mainnet],
 });
