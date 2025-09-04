@@ -105,7 +105,7 @@ export default function ConvertToUsdc({
               <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                 <span>Destination Network: Solana</span>
                 <a
-                  href="https://github.com/soos3d/universal-accounts-connectkit-demo/blob/main/ua-conneckit/app/components/SendFunds.tsx"
+                  href="https://github.com/soos3d/universal-accounts-connectkit-demo/blob/main/ua-conneckit/app/components/Convertions.tsx"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:underline flex items-center gap-1"
