@@ -165,20 +165,44 @@ export default function ContractInteraction({
         )}
 
         <div className="w-full mt-2 pt-3 border-t border-[#4A4A6A]">
-          <p className="text-xs text-gray-400">
-            <span className="font-medium text-gray-300">
-              SDK Functions Used:
-            </span>
-            <br />
-            <code className="bg-[#1A1A2A] px-1 py-0.5 rounded text-purple-300 mx-1">
-              createUniversalTransaction
-            </code>
-            ,
-            <br />
-            <code className="bg-[#1A1A2A] px-1 py-0.5 rounded text-purple-300 mx-1">
-              sendTransaction
-            </code>
-          </p>
+          <div className="flex justify-between items-start">
+            <p className="text-xs text-gray-400">
+              <span className="font-medium text-gray-300">
+                SDK Functions Used:
+              </span>
+              <br />
+              <code className="bg-[#1A1A2A] px-1 py-0.5 rounded text-purple-300 mx-1">
+                createUniversalTransaction
+              </code>
+              ,
+              <br />
+              <code className="bg-[#1A1A2A] px-1 py-0.5 rounded text-purple-300 mx-1">
+                sendTransaction
+              </code>
+            </p>
+            <a
+              href="https://developers.particle.network/universal-accounts/ua-reference/desktop/web#sending-a-custom-payable-transaction"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-purple-400 hover:underline flex items-center gap-1"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              View Docs
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -5,55 +5,52 @@ import "./animations.css";
 import {
   UniversalAccount,
   CHAIN_ID,
+  SUPPORTED_TOKEN_TYPE,
 } from "@particle-network/universal-account-sdk";
+import { Button } from "../../components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-interface SendFundsProps {
+interface ConvertToUsdcProps {
   universalAccountInstance: UniversalAccount | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   walletClient: any;
   address: string | undefined;
 }
 
-const SendFunds = ({
+export default function ConvertToUsdc({
   universalAccountInstance,
   walletClient,
   address,
-}: SendFundsProps) => {
-  const [showDetails, setShowDetails] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+}: ConvertToUsdcProps) {
+  const [amount, setAmount] = useState<string>("1"); // human-readable USDC
   const [txResult, setTxResult] = useState<string | null>(null);
-  const [recipientAddress, setRecipientAddress] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  const sendTransaction = async () => {
-    if (!universalAccountInstance || !address) {
-      setTxResult("Error: Universal Account or wallet address not available");
-      return;
-    }
-
+  const runConversion = async () => {
+    if (!universalAccountInstance) return;
     setIsLoading(true);
     setTxResult(null);
 
-    const usdcArbContract = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"; // USDC on Arbitrum
-
     try {
-      // Create a transaction to send funds to the EOA wallet
+      if (!amount || Number(amount) <= 0) {
+        throw new Error("Please enter a valid USDC amount.");
+      }
+
+      // 1) Ask UA to ensure `amount` USDC on Arbitrum (auto-sourcing from your assets elsewhere)
       const transaction =
-        await universalAccountInstance.createTransferTransaction({
-          token: {
-            chainId: CHAIN_ID.ARBITRUM_MAINNET_ONE,
-            address: usdcArbContract,
-          },
-          amount: amount, // Amount to send (human-readable string)
-          receiver: recipientAddress, // Target address
+        await universalAccountInstance.createConvertTransaction({
+          expectToken: { type: SUPPORTED_TOKEN_TYPE.USDC, amount: "1" },
+          chainId: CHAIN_ID.SOLANA_MAINNET,
         });
 
+      // 2) Sign UA payload
       const signature = await walletClient?.signMessage({
         account: address as `0x${string}`,
         message: { raw: transaction.rootHash },
       });
 
+      // 3) Send via UA
       const result = await universalAccountInstance.sendTransaction(
         transaction,
         signature
@@ -63,10 +60,10 @@ const SendFunds = ({
         `https://universalx.app/activity/details?id=${result.transactionId}`
       );
     } catch (error) {
-      console.error("Error sending funds:", error);
-      setTxResult(
-        `Error: ${error instanceof Error ? error.message : String(error)}`
-      );
+      console.error("Convert transaction failed:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      setTxResult(`Error: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -75,13 +72,14 @@ const SendFunds = ({
   return (
     <div className="space-y-4 h-full flex flex-col">
       <h3 className="text-xl font-semibold text-gray-200 border-b border-[#4A4A6A] pb-2 text-center">
-        Transfer Funds
+        Cross-Chain Conversion
       </h3>
+
       <div className="bg-[#2A2A4A] rounded-lg p-6 border border-[#4A4A6A] shadow-inner flex flex-col gap-4 hover:border-purple-500 transition-colors flex-grow">
         <div className="w-full mb-2">
           <div className="flex justify-between items-center">
             <h4 className="text-lg font-medium text-purple-300">
-              Send Funds to another account
+              Convert to USDC
             </h4>
             <button
               onClick={() => setShowDetails(!showDetails)}
@@ -99,17 +97,13 @@ const SendFunds = ({
           {showDetails && (
             <div className="mt-3 animate-fadeIn">
               <p className="text-sm text-gray-300 mb-4">
-                This example demonstrates how to send funds from your Universal
-                Account to another account. The transaction send USDC to another
-                account on Arbitrum.
-                <br />
-                <br />
-                <span className="font-medium text-gray-300">Note:</span> The
-                Universal Account must have enough funds (USDC) to cover the
-                transaction.
+                This runs a conversion so your Universal Account ends up with{" "}
+                <span className="font-semibold">{amount || "X"}</span> USDC on
+                Solana. UA handles sourcing and swapping from assets you hold on
+                other chains.
               </p>
               <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                <span>Network: Arbitrum One</span>
+                <span>Destination Network: Solana</span>
                 <a
                   href="https://github.com/soos3d/universal-accounts-connectkit-demo/blob/main/ua-conneckit/app/components/SendFunds.tsx"
                   target="_blank"
@@ -136,57 +130,25 @@ const SendFunds = ({
           )}
         </div>
 
-        <div className="w-full mt-4">
+        {/* Amount input */}
+        <div className="w-full">
           <p className="text-sm text-gray-300 mb-2">Amount (USDC)</p>
           <input
-            type="number"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="w-full px-4 py-2 bg-[#1A1A2A] border border-[#4A4A6A] rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="0.1"
-            step="0.1"
-            min="0.1"
-          />
-          <p className="text-sm text-gray-300 mb-2 mt-2">Recipient Address</p>
-          <input
-            type="text"
-            value={recipientAddress}
-            onChange={(e) => setRecipientAddress(e.target.value)}
-            className="w-full px-4 py-2 bg-[#1A1A2A] border border-[#4A4A6A] rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="0x..."
+            onChange={(e) => setAmount(e.target.value.trim())}
+            placeholder="e.g. 1.00"
+            className="w-full px-4 py-2 bg-[#1A1A2A] border border-[#4A4A6A] rounded-md text-gray-200 placeholder-gray-500 focus:outline-none"
+            inputMode="decimal"
           />
         </div>
 
-        <button
-          onClick={sendTransaction}
+        <Button
+          onClick={runConversion}
           disabled={isLoading}
-          className="w-full py-3 px-6 rounded-lg font-bold text-lg text-white bg-[#9333EA] hover:bg-[#8429D8] transition-all duration-300 shadow-lg flex items-center justify-center gap-2 mt-4"
+          className="w-full py-3 px-6 rounded-lg font-bold text-lg text-white bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 transition-all duration-300 shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-          >
-            <path
-              d="M12 5L12 19"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M19 12L12 19L5 12"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {isLoading ? "Sending..." : "Send Funds"}
-        </button>
+          {isLoading ? "Converting..." : "Convert to USDC"}
+        </Button>
 
         {txResult && (
           <div className="mt-4 text-center text-sm">
@@ -213,7 +175,7 @@ const SendFunds = ({
               </span>
               <br />
               <code className="bg-[#1A1A2A] px-1 py-0.5 rounded text-purple-300 mx-1">
-                createTransferTransaction
+                createConvertTransaction
               </code>
               ,
               <br />
@@ -222,7 +184,7 @@ const SendFunds = ({
               </code>
             </p>
             <a
-              href="https://developers.particle.network/universal-accounts/ua-reference/desktop/web#sending-a-transfer-transaction"
+              href="https://developers.particle.network/universal-accounts/ua-reference/desktop/web#sending-a-conversion-transaction"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-purple-400 hover:underline flex items-center gap-1"
@@ -248,6 +210,4 @@ const SendFunds = ({
       </div>
     </div>
   );
-};
-
-export default SendFunds;
+}

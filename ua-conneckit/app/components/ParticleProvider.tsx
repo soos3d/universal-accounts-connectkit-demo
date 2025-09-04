@@ -3,6 +3,7 @@
 import { ConnectKitProvider, createConfig } from "@particle-network/connectkit";
 import { authWalletConnectors } from "@particle-network/connectkit/auth";
 import { mainnet } from "@particle-network/connectkit/chains";
+import { evmWalletConnectors } from "@particle-network/connectkit/evm";
 import React from "react";
 
 // Retrieved from https://dashboard.particle.network
@@ -21,15 +22,28 @@ const config = createConfig({
   appearance: {
     splitEmailAndPhone: false, // Optional, displays Email and phone number entry separately
     collapseWalletList: false, // Optional, hide wallet list behind a button
-    hideContinueButton: false, // Optional, remove "Continue" button underneath Email or phone number entry
-    connectorsOrder: ["email", "phone", "social", "wallet"], //  Optional, sort connection methods (index 0 will be placed at the top)
+    hideContinueButton: true, // Optional, remove "Continue" button underneath Email or phone number entry
+    connectorsOrder: ["social", "wallet", "email", "phone"], //  Optional, sort connection methods (index 0 will be placed at the top)
     language: "en-US", // Optional, also supported ja-JP, zh-CN, zh-TW, and ko-KR
     mode: "dark", // Optional, changes theme between light, dark, or auto (which will change it based on system settings)
+    recommendedWallets: [{ walletId: "metaMask", label: "Popular" }],
   },
   walletConnectors: [
     authWalletConnectors({
       // Optional, configure this if you're using social logins
-      authTypes: ["email", "google", "apple", "twitter", "github"], // Optional, restricts the types of social logins supported
+      authTypes: [
+        "google",
+        "apple",
+        "twitter",
+        "github",
+        "email",
+        "phone",
+        "facebook",
+        "microsoft",
+        "linkedin",
+        "discord",
+        "twitch",
+      ], // Optional, restricts the types of social logins supported
       fiatCoin: "USD", // Optional, also supports CNY, JPY, HKD, INR, and KRW
       promptSettingConfig: {
         // Optional, changes the frequency in which the user is asked to set a master or payment password
@@ -40,6 +54,11 @@ const config = createConfig({
         promptMasterPasswordSettingWhenLogin: 1,
         promptPaymentPasswordSettingWhenSign: 1,
       },
+    }),
+    evmWalletConnectors({
+      walletConnectProjectId: process.env
+        .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+      multiInjectedProviderDiscovery: true,
     }),
   ],
   chains: [mainnet],

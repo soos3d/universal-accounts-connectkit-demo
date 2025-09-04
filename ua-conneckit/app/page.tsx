@@ -41,6 +41,8 @@ import DepositDialog from "./components/DepositDialog";
 // Import components
 import ContractInteraction from "./components/ContractInteraction";
 import SendFunds from "./components/SendFunds";
+import UsdcTransfer from "./components/UniversalTransfer";
+import ConvertToUsdc from "./components/Convertions";
 
 // Helper functions
 const formatAddress = (addr: string) => {
@@ -168,7 +170,7 @@ const App = () => {
         }}
       ></div>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto bg-[#1F1F3A]/80 rounded-xl shadow-2xl p-8 space-y-8 border border-[#3A3A5A] backdrop-blur-sm">
+      <div className="relative z-10 w-full max-w-5xl mx-auto bg-[#1F1F3A]/80 rounded-xl shadow-2xl p-8 space-y-8 border border-[#3A3A5A] backdrop-blur-sm">
         {/* Header Section */}
         <div className="flex justify-center items-center mb-8 border-b border-[#3A3A5A] pb-6">
           <h1 className="text-4xl font-bold text-[#C084FC] drop-shadow-lg">
@@ -177,7 +179,7 @@ const App = () => {
         </div>
 
         {isConnected && (
-          <div className="w-full max-w-3xl mx-auto space-y-8">
+          <div className="w-full max-w-4xl mx-auto space-y-8">
             {/* Main Content Grid - Account Details Button and Balance side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column - Account Details Button */}
@@ -467,6 +469,20 @@ const App = () => {
             {/* Contract Interaction and Send Funds Components */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ContractInteraction
+                universalAccountInstance={universalAccountInstance}
+                walletClient={walletClient}
+                address={address}
+              />
+              <ConvertToUsdc
+                universalAccountInstance={universalAccountInstance}
+                walletClient={walletClient}
+                address={address}
+              />
+            </div>
+
+            {/* Universal USDC Transfer and Send Funds Components */}
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <UsdcTransfer
                 universalAccountInstance={universalAccountInstance}
                 walletClient={walletClient}
                 address={address}
