@@ -597,6 +597,17 @@
     eventemitter3 "^5.0.1"
     preact "^10.24.2"
 
+"@coinbase/wallet-sdk@4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-4.3.4.tgz#f9388f252e36e6b88cd0849fb17f97d1c36a6edc"
+  integrity sha512-4Lt9AtMCGpmKJLwWtMVt/GqhSlC52L7hTfe4HnKHdWm/0IaIGeuEM0LzvXekEyYc2/E/FeBTJ0IlyOODb4I/rQ==
+  dependencies:
+    "@noble/hashes" "^1.4.0"
+    clsx "^1.2.1"
+    eventemitter3 "^5.0.1"
+    preact "^10.24.2"
+    viem "^2.27.2"
+
 "@coral-xyz/anchor-errors@^0.30.1":
   version "0.30.1"
   resolved "https://registry.yarnpkg.com/@coral-xyz/anchor-errors/-/anchor-errors-0.30.1.tgz#bdfd3a353131345244546876eb4afc0e125bec30"
@@ -3105,6 +3116,11 @@ abitype@1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.8.tgz#3554f28b2e9d6e9f35eb59878193eabd1b9f46ba"
   integrity sha512-ZeiI6h3GnW06uYDLx0etQtX/p8E24UaHHBj57RSjK7YBFe7iuVn07EDpOeP451D06sF27VOz9JJPlIKJmXgkEg==
+
+abitype@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.1.0.tgz#510c5b3f92901877977af5e864841f443bf55406"
+  integrity sha512-6Vh4HcRxNMLA0puzPjM5GBgT4aAcFGKZzSgAXvuZ27shJP6NEpielTuqbBmZILR5/xd0PizkBGy5hReKz9jl5A==
 
 abitype@^1.0.6, abitype@^1.0.9:
   version "1.0.9"
@@ -7949,6 +7965,20 @@ viem@>=2.29.0, viem@^2, viem@^2.24.3:
     "@scure/bip32" "1.7.0"
     "@scure/bip39" "1.6.0"
     abitype "1.0.8"
+    isows "1.0.7"
+    ox "0.9.3"
+    ws "8.18.3"
+
+viem@^2.27.2:
+  version "2.37.3"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.37.3.tgz#3c4ddaa4808f097f67c1464dfbc6058e30fdeaaf"
+  integrity sha512-hwoZqkFSy13GCFzIftgfIH8hNENvdlcHIvtLt73w91tL6rKmZjQisXWTahi1Vn5of8/JQ1FBKfwUus3YkDXwbw==
+  dependencies:
+    "@noble/curves" "1.9.1"
+    "@noble/hashes" "1.8.0"
+    "@scure/bip32" "1.7.0"
+    "@scure/bip39" "1.6.0"
+    abitype "1.1.0"
     isows "1.0.7"
     ox "0.9.3"
     ws "8.18.3"
