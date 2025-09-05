@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ParticleConnectkit } from "./components/ParticleProvider";
+import { WalletVisibilityProvider } from "./context/WalletVisibilityContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ParticleConnectkit>{children}</ParticleConnectkit>
+        <WalletVisibilityProvider>
+          <ParticleConnectkit>{children}</ParticleConnectkit>
+        </WalletVisibilityProvider>
       </body>
     </html>
   );

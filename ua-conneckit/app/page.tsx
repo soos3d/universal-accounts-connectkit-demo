@@ -184,25 +184,27 @@ const App = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column - Account Details Button */}
               <div>
-                <Dialog
-                  open={isAddressDialogOpen}
-                  onOpenChange={setIsAddressDialogOpen}
-                >
-                  <DialogTrigger asChild>
-                    <button className="w-full bg-[#2A2A4A] rounded-lg p-6 border border-[#4A4A6A] shadow-inner hover:border-purple-500 transition-colors h-full flex flex-col items-center justify-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <Eye className="h-5 w-5 text-gray-300" />
-                        <span className="text-xl font-semibold text-gray-200">
-                          View Account Details
-                        </span>
-                      </div>
-                      {address && (
-                        <span className="text-sm text-gray-400">
-                          {formatAddress(address as string)}
-                        </span>
-                      )}
-                    </button>
-                  </DialogTrigger>
+                <div className="flex flex-col gap-3">
+                  {/* Account Details Button */}
+                  <Dialog
+                    open={isAddressDialogOpen}
+                    onOpenChange={setIsAddressDialogOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <button className="w-full bg-[#2A2A4A] rounded-lg p-6 border border-[#4A4A6A] shadow-inner hover:border-purple-500 transition-colors flex flex-col items-center justify-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <Eye className="h-5 w-5 text-gray-300" />
+                          <span className="text-xl font-semibold text-gray-200">
+                            View Account Details
+                          </span>
+                        </div>
+                        {address && (
+                          <span className="text-sm text-gray-400">
+                            {formatAddress(address as string)}
+                          </span>
+                        )}
+                      </button>
+                    </DialogTrigger>
                   <DialogContent className="sm:max-w-md bg-[#1F1F3A] border border-[#4A4A6A] text-gray-200">
                     <DialogHeader>
                       <DialogTitle className="text-xl font-semibold text-center text-[#C084FC]">
@@ -368,7 +370,16 @@ const App = () => {
                       )}
                     </div>
                   </DialogContent>
-                </Dialog>
+                  </Dialog>
+                  
+                  {/* Logout Button */}
+                  <button
+                    onClick={() => disconnect()}
+                    className="w-full bg-[#2A2A4A] rounded-lg p-3 border border-[#4A4A6A] shadow-inner hover:border-red-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span className="text-red-500 font-medium">Log Out</span>
+                  </button>
+                </div>
               </div>
 
               {/* Right Column - Universal Balance Section */}
@@ -494,15 +505,7 @@ const App = () => {
               />
             </div>
 
-            {/* Disconnect Button */}
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={() => disconnect()}
-                className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors font-medium"
-              >
-                Disconnect
-              </button>
-            </div>
+            {/* Removed Disconnect Button from here */}
           </div>
         )}
 
@@ -512,7 +515,7 @@ const App = () => {
               Connect your wallet to view account details
             </p>
             <div className="w-56">
-              <ConnectButton />
+              <ConnectButton label="Log In" />
             </div>
           </div>
         )}

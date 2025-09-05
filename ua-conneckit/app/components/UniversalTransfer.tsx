@@ -9,7 +9,15 @@ import {
 } from "@particle-network/universal-account-sdk";
 import { Interface, parseUnits } from "ethers";
 import { Button } from "../../components/ui/button";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { Switch } from "../../components/ui/switch";
+import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import { useWalletVisibility } from "../context/WalletVisibilityContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../components/ui/tooltip";
 
 interface UsdcTransferProps {
   universalAccountInstance: UniversalAccount | null;
@@ -28,6 +36,8 @@ export default function UsdcTransfer({
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
   const [amount, setAmount] = useState<string>(""); // human-readable USDC, e.g. "12.34"
+
+  const { isWalletVisible, toggleWalletVisibility } = useWalletVisibility();
 
   // Native USDC on Arbitrum (not USDC.e)
   const USDC_ARBITRUM = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
@@ -179,16 +189,42 @@ export default function UsdcTransfer({
         </div>
 
         {/* Inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
-          <div>
-            <p className="text-sm text-gray-300 mb-2">Amount (USDC)</p>
-            <input
-              value={amount}
-              onChange={(e) => setAmount(e.target.value.trim())}
-              placeholder="e.g. 12.34"
-              className="w-full px-4 py-2 bg-[#1A1A2A] border border-[#4A4A6A] rounded-md text-gray-200 placeholder-gray-500 focus:outline-none"
-              inputMode="decimal"
-            />
+        <div className="grid grid-cols-1 gap-3 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <p className="text-sm text-gray-300 mb-2">Amount (USDC)</p>
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value.trim())}
+                placeholder="e.g. 12.34"
+                className="w-full px-4 py-2 bg-[#1A1A2A] border border-[#4A4A6A] rounded-md text-gray-200 placeholder-gray-500 focus:outline-none"
+                inputMode="decimal"
+              />
+            </div>
+
+            {/* Wallet Toggle */}
+            <div className="flex items-center justify-between p-3 bg-[#1A1A2A] rounded-lg border border-[#4A4A6A] h-[42px] self-end">
+              <div className="flex items-center gap-1">
+                <span className="text-sm font-medium text-gray-200">
+                  Wallet Modal
+                </span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-[220px] bg-[#2A2A4A] text-gray-200 border border-[#4A4A6A]">
+                      This enables you to access the underlying EOA connected to
+                      the Universal Account via Particle Wallet
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Switch
+                checked={isWalletVisible}
+                onCheckedChange={toggleWalletVisibility}
+              />
+            </div>
           </div>
         </div>
 
