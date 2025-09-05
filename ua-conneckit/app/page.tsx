@@ -37,6 +37,7 @@ import {
   //SUPPORTED_TOKEN_TYPE,
 } from "@particle-network/universal-account-sdk";
 import DepositDialog from "./components/DepositDialog";
+import AssetBreakdownDialog from "./components/AssetBreakdownDialog";
 
 // Import components
 import ContractInteraction from "./components/ContractInteraction";
@@ -73,6 +74,7 @@ const App = () => {
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [showDepositDialog, setShowDepositDialog] = useState<boolean>(false);
   const [showDepositDetails, setShowDepositDetails] = useState<boolean>(false);
+  const [isAssetBreakdownOpen, setIsAssetBreakdownOpen] = useState<boolean>(false);
   const [tooltipsEnabled, setTooltipsEnabled] = useState(false);
 
   // Disable tooltips when dialog opens, enable after a delay
@@ -154,6 +156,7 @@ const App = () => {
       // Get aggregated balance across all chains
       // This includes ETH, USDC, USDT, etc. on various chains
       const assets = await universalAccountInstance.getPrimaryAssets();
+      console.log("Primary Assets:", assets);
       setPrimaryAssets(assets);
     };
     fetchPrimaryAssets();
@@ -205,173 +208,174 @@ const App = () => {
                         )}
                       </button>
                     </DialogTrigger>
-                  <DialogContent className="sm:max-w-md bg-[#1F1F3A] border border-[#4A4A6A] text-gray-200">
-                    <DialogHeader>
-                      <DialogTitle className="text-xl font-semibold text-center text-[#C084FC]">
-                        Account Addresses
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="grid grid-cols-1 gap-4 mt-4">
-                      {/* Wallet Address */}
-                      <div className="bg-[#2A2A4A] rounded-lg p-5 border border-[#4A4A6A] shadow-inner">
-                        <div className="text-sm text-gray-300 font-medium mb-2 flex items-center gap-2">
-                          Wallet Address
-                          {tooltipsEnabled ? (
-                            <TooltipProvider>
-                              <Tooltip delayDuration={300}>
-                                <TooltipTrigger asChild>
-                                  <button className="inline-flex items-center justify-center rounded-full cursor-help">
-                                    <HelpCircle className="h-4 w-4 text-gray-400" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent
-                                  side="right"
-                                  className="bg-[#1F1F3A] text-gray-200 border border-[#4A4A6A] max-w-xs"
-                                >
-                                  <p>
-                                    EOA the user used to login. This is the
-                                    owner of the universal account.
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          ) : (
-                            <button className="inline-flex items-center justify-center rounded-full cursor-help">
-                              <HelpCircle className="h-4 w-4 text-gray-400" />
-                            </button>
-                          )}
-                        </div>
-                        <div className="font-mono text-gray-200 text-sm break-all bg-[#1F1F3A] p-3 rounded-md flex justify-between items-center gap-2">
-                          <span className="overflow-auto">
-                            {address as string}
-                          </span>
-                          <button
-                            onClick={() =>
-                              handleCopyToClipboard(address as string)
-                            }
-                            className="p-1.5 rounded-full hover:bg-[#3A3A5A] transition-colors flex-shrink-0"
-                          >
-                            {copiedAddress === address ? (
-                              <Check className="h-4 w-4 text-green-400" />
+                    <DialogContent className="sm:max-w-md bg-[#1F1F3A] border border-[#4A4A6A] text-gray-200">
+                      <DialogHeader>
+                        <DialogTitle className="text-xl font-semibold text-center text-[#C084FC]">
+                          Account Addresses
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="grid grid-cols-1 gap-4 mt-4">
+                        {/* Wallet Address */}
+                        <div className="bg-[#2A2A4A] rounded-lg p-5 border border-[#4A4A6A] shadow-inner">
+                          <div className="text-sm text-gray-300 font-medium mb-2 flex items-center gap-2">
+                            Wallet Address
+                            {tooltipsEnabled ? (
+                              <TooltipProvider>
+                                <Tooltip delayDuration={300}>
+                                  <TooltipTrigger asChild>
+                                    <button className="inline-flex items-center justify-center rounded-full cursor-help">
+                                      <HelpCircle className="h-4 w-4 text-gray-400" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    side="right"
+                                    className="bg-[#1F1F3A] text-gray-200 border border-[#4A4A6A] max-w-xs"
+                                  >
+                                    <p>
+                                      EOA the user used to login. This is the
+                                      owner of the universal account.
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             ) : (
-                              <Copy className="h-4 w-4 text-gray-400" />
+                              <button className="inline-flex items-center justify-center rounded-full cursor-help">
+                                <HelpCircle className="h-4 w-4 text-gray-400" />
+                              </button>
                             )}
-                          </button>
+                          </div>
+                          <div className="font-mono text-gray-200 text-sm break-all bg-[#1F1F3A] p-3 rounded-md flex justify-between items-center gap-2">
+                            <span className="overflow-auto">
+                              {address as string}
+                            </span>
+                            <button
+                              onClick={() =>
+                                handleCopyToClipboard(address as string)
+                              }
+                              className="p-1.5 rounded-full hover:bg-[#3A3A5A] transition-colors flex-shrink-0"
+                            >
+                              {copiedAddress === address ? (
+                                <Check className="h-4 w-4 text-green-400" />
+                              ) : (
+                                <Copy className="h-4 w-4 text-gray-400" />
+                              )}
+                            </button>
+                          </div>
                         </div>
+
+                        {/* EVM Universal Account */}
+                        {accountInfo && (
+                          <div className="bg-[#2A2A4A] rounded-lg p-5 border border-[#4A4A6A] shadow-inner">
+                            <div className="text-sm text-gray-300 font-medium mb-2 flex items-center gap-2">
+                              EVM Universal Account Address
+                              {tooltipsEnabled ? (
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={300}>
+                                    <TooltipTrigger asChild>
+                                      <button className="inline-flex items-center justify-center rounded-full cursor-help">
+                                        <HelpCircle className="h-4 w-4 text-gray-400" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="right"
+                                      className="bg-[#1F1F3A] text-gray-200 border border-[#4A4A6A] max-w-xs"
+                                    >
+                                      <p>
+                                        This is the EVM universal account. This
+                                        and the SOL address lead to the same
+                                        account and balance, but this is used to
+                                        deposit EVM assets on EVM chains.
+                                      </p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              ) : (
+                                <button className="inline-flex items-center justify-center rounded-full cursor-help">
+                                  <HelpCircle className="h-4 w-4 text-gray-400" />
+                                </button>
+                              )}
+                            </div>
+                            <div className="font-mono text-gray-200 text-sm break-all bg-[#1F1F3A] p-3 rounded-md flex justify-between items-center gap-2">
+                              <span className="overflow-auto">
+                                {accountInfo.evmSmartAccount}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  handleCopyToClipboard(
+                                    accountInfo.evmSmartAccount
+                                  )
+                                }
+                                className="p-1.5 rounded-full hover:bg-[#3A3A5A] transition-colors flex-shrink-0"
+                              >
+                                {copiedAddress ===
+                                accountInfo.evmSmartAccount ? (
+                                  <Check className="h-4 w-4 text-green-400" />
+                                ) : (
+                                  <Copy className="h-4 w-4 text-gray-400" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* SOL Universal Account */}
+                        {accountInfo && (
+                          <div className="bg-[#2A2A4A] rounded-lg p-5 border border-[#4A4A6A] shadow-inner">
+                            <div className="text-sm text-gray-300 font-medium mb-2 flex items-center gap-2">
+                              SOL Universal Account Address
+                              {tooltipsEnabled ? (
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={300}>
+                                    <TooltipTrigger asChild>
+                                      <button className="inline-flex items-center justify-center rounded-full cursor-help">
+                                        <HelpCircle className="h-4 w-4 text-gray-400" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="right"
+                                      className="bg-[#1F1F3A] text-gray-200 border border-[#4A4A6A] max-w-xs"
+                                    >
+                                      <p>
+                                        This is the Solana universal account.
+                                        This and the EVM address lead to the
+                                        same account and balance, but this is
+                                        used to deposit assets on Solana.
+                                      </p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              ) : (
+                                <button className="inline-flex items-center justify-center rounded-full cursor-help">
+                                  <HelpCircle className="h-4 w-4 text-gray-400" />
+                                </button>
+                              )}
+                            </div>
+                            <div className="font-mono text-gray-200 text-sm break-all bg-[#1F1F3A] p-3 rounded-md flex justify-between items-center gap-2">
+                              <span className="overflow-auto">
+                                {accountInfo.solanaSmartAccount}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  handleCopyToClipboard(
+                                    accountInfo.solanaSmartAccount
+                                  )
+                                }
+                                className="p-1.5 rounded-full hover:bg-[#3A3A5A] transition-colors flex-shrink-0"
+                              >
+                                {copiedAddress ===
+                                accountInfo.solanaSmartAccount ? (
+                                  <Check className="h-4 w-4 text-green-400" />
+                                ) : (
+                                  <Copy className="h-4 w-4 text-gray-400" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
-
-                      {/* EVM Universal Account */}
-                      {accountInfo && (
-                        <div className="bg-[#2A2A4A] rounded-lg p-5 border border-[#4A4A6A] shadow-inner">
-                          <div className="text-sm text-gray-300 font-medium mb-2 flex items-center gap-2">
-                            EVM Universal Account Address
-                            {tooltipsEnabled ? (
-                              <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                  <TooltipTrigger asChild>
-                                    <button className="inline-flex items-center justify-center rounded-full cursor-help">
-                                      <HelpCircle className="h-4 w-4 text-gray-400" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    side="right"
-                                    className="bg-[#1F1F3A] text-gray-200 border border-[#4A4A6A] max-w-xs"
-                                  >
-                                    <p>
-                                      This is the EVM universal account. This
-                                      and the SOL address lead to the same
-                                      account and balance, but this is used to
-                                      deposit EVM assets on EVM chains.
-                                    </p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            ) : (
-                              <button className="inline-flex items-center justify-center rounded-full cursor-help">
-                                <HelpCircle className="h-4 w-4 text-gray-400" />
-                              </button>
-                            )}
-                          </div>
-                          <div className="font-mono text-gray-200 text-sm break-all bg-[#1F1F3A] p-3 rounded-md flex justify-between items-center gap-2">
-                            <span className="overflow-auto">
-                              {accountInfo.evmSmartAccount}
-                            </span>
-                            <button
-                              onClick={() =>
-                                handleCopyToClipboard(
-                                  accountInfo.evmSmartAccount
-                                )
-                              }
-                              className="p-1.5 rounded-full hover:bg-[#3A3A5A] transition-colors flex-shrink-0"
-                            >
-                              {copiedAddress === accountInfo.evmSmartAccount ? (
-                                <Check className="h-4 w-4 text-green-400" />
-                              ) : (
-                                <Copy className="h-4 w-4 text-gray-400" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* SOL Universal Account */}
-                      {accountInfo && (
-                        <div className="bg-[#2A2A4A] rounded-lg p-5 border border-[#4A4A6A] shadow-inner">
-                          <div className="text-sm text-gray-300 font-medium mb-2 flex items-center gap-2">
-                            SOL Universal Account Address
-                            {tooltipsEnabled ? (
-                              <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                  <TooltipTrigger asChild>
-                                    <button className="inline-flex items-center justify-center rounded-full cursor-help">
-                                      <HelpCircle className="h-4 w-4 text-gray-400" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    side="right"
-                                    className="bg-[#1F1F3A] text-gray-200 border border-[#4A4A6A] max-w-xs"
-                                  >
-                                    <p>
-                                      This is the Solana universal account. This
-                                      and the EVM address lead to the same
-                                      account and balance, but this is used to
-                                      deposit assets on Solana.
-                                    </p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            ) : (
-                              <button className="inline-flex items-center justify-center rounded-full cursor-help">
-                                <HelpCircle className="h-4 w-4 text-gray-400" />
-                              </button>
-                            )}
-                          </div>
-                          <div className="font-mono text-gray-200 text-sm break-all bg-[#1F1F3A] p-3 rounded-md flex justify-between items-center gap-2">
-                            <span className="overflow-auto">
-                              {accountInfo.solanaSmartAccount}
-                            </span>
-                            <button
-                              onClick={() =>
-                                handleCopyToClipboard(
-                                  accountInfo.solanaSmartAccount
-                                )
-                              }
-                              className="p-1.5 rounded-full hover:bg-[#3A3A5A] transition-colors flex-shrink-0"
-                            >
-                              {copiedAddress ===
-                              accountInfo.solanaSmartAccount ? (
-                                <Check className="h-4 w-4 text-green-400" />
-                              ) : (
-                                <Copy className="h-4 w-4 text-gray-400" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </DialogContent>
+                    </DialogContent>
                   </Dialog>
-                  
+
                   {/* Logout Button */}
                   <button
                     onClick={() => disconnect()}
@@ -384,14 +388,20 @@ const App = () => {
 
               {/* Right Column - Universal Balance Section */}
               <div>
-                <div className="bg-[#2A2A4A] rounded-lg p-6 border border-[#4A4A6A] shadow-inner hover:border-yellow-500 transition-colors h-full flex flex-col justify-center">
+                <button 
+                  onClick={() => setIsAssetBreakdownOpen(true)}
+                  className="w-full bg-[#2A2A4A] rounded-lg p-6 border border-[#4A4A6A] shadow-inner hover:border-yellow-500 transition-colors h-full flex flex-col justify-center"
+                >
                   <div className="text-sm text-gray-300 font-medium text-center">
                     Universal Balance
                   </div>
                   <p className="text-4xl font-bold text-[#FACC15] mt-3 text-center">
                     ${primaryAssets?.totalAmountInUSD.toFixed(4) || "0.00"}
                   </p>
-                </div>
+                  <div className="text-xs text-gray-400 mt-3 text-center">
+                    Click to view asset breakdown
+                  </div>
+                </button>
               </div>
             </div>
 
@@ -529,6 +539,13 @@ const App = () => {
             solanaAddress={accountInfo.solanaSmartAccount}
           />
         )}
+        
+        {/* Asset Breakdown Dialog */}
+        <AssetBreakdownDialog
+          isOpen={isAssetBreakdownOpen}
+          setIsOpen={setIsAssetBreakdownOpen}
+          assets={primaryAssets}
+        />
       </div>
     </div>
   );

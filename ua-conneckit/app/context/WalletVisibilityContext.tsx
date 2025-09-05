@@ -7,17 +7,23 @@ interface WalletVisibilityContextType {
   toggleWalletVisibility: () => void;
 }
 
-const WalletVisibilityContext = createContext<WalletVisibilityContextType | undefined>(undefined);
+const WalletVisibilityContext = createContext<
+  WalletVisibilityContextType | undefined
+>(undefined);
 
-export const WalletVisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isWalletVisible, setIsWalletVisible] = useState(true);
+export const WalletVisibilityProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  const [isWalletVisible, setIsWalletVisible] = useState(false);
 
   const toggleWalletVisibility = () => {
-    setIsWalletVisible(prev => !prev);
+    setIsWalletVisible((prev) => !prev);
   };
 
   return (
-    <WalletVisibilityContext.Provider value={{ isWalletVisible, toggleWalletVisibility }}>
+    <WalletVisibilityContext.Provider
+      value={{ isWalletVisible, toggleWalletVisibility }}
+    >
       {children}
     </WalletVisibilityContext.Provider>
   );
@@ -26,7 +32,9 @@ export const WalletVisibilityProvider: React.FC<{ children: React.ReactNode }> =
 export const useWalletVisibility = () => {
   const context = useContext(WalletVisibilityContext);
   if (context === undefined) {
-    throw new Error("useWalletVisibility must be used within a WalletVisibilityProvider");
+    throw new Error(
+      "useWalletVisibility must be used within a WalletVisibilityProvider"
+    );
   }
   return context;
 };
